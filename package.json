@@ -28,7 +28,7 @@
     "lucide-react": "^0.411.0",
     "next": "14.2.5",
     "next-auth": "^4.24.7",
-    "nodemailer": "^6.9.14",
+    "nodemailer": "^7.0.13",
     "prisma": "^5.16.0",
     "react": "^18",
     "react-dom": "^18",
