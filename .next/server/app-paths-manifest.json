@@ -1,0 +1,10 @@
+{
+  "/api/analytics/track/route": "app/api/analytics/track/route.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/(public)/page": "app/(public)/page.js",
+  "/(public)/contact/page": "app/(public)/contact/page.js",
+  "/(public)/soutenir/dons/page": "app/(public)/soutenir/dons/page.js",
+  "/(public)/soutenir/partenaire/page": "app/(public)/soutenir/partenaire/page.js",
+  "/(auth)/login/page": "app/(auth)/login/page.js",
+  "/(public)/espace/showroom/page": "app/(public)/espace/showroom/page.js"
+}

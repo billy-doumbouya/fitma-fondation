@@ -1,0 +1,451 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ── UTILISATEURS ──────────────────────────────────────────────
+model Utilisateur {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  password      String?  // null si OAuth Google
+  nom           String
+  prenom        String
+  telephone     String?
+  avatar        String?
+  role          Role     @default(MEMBRE)
+  actif         Boolean  @default(true)
+  langue        String   @default("fr")
+  googleId      String?  @unique
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  inscriptions  Inscription[]
+  reservations  Reservation[]
+  candidatures  Candidature[]
+  dons          Don[]
+
+  @@map("utilisateurs")
+}
+
+enum Role {
+  VISITEUR
+  MEMBRE
+  ADMIN
+}
+
+model Admin {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+
+  @@map("admins")
+}
+
+// ── ACADEMY — FORMATIONS ──────────────────────────────────────
+model Formation {
+  id            String          @id @default(cuid())
+  titre         String
+  titreEn       String?
+  slug          String          @unique
+  description   String
+  descriptionEn String?
+  objectifs     String[]
+  prerequis     String?
+  duree         String
+  format        FormatFormation @default(PRESENTIEL)
+  niveau        Niveau          @default(DEBUTANT)
+  categorie     String
+  prix          Float           @default(0)
+  devise        String          @default("GNF")
+  gratuit       Boolean         @default(false)
+  placesMax     Int?
+  imageUrl      String?
+  publicKey     String?
+  formateur     String?
+  attestation   Boolean         @default(true)
+  publie        Boolean         @default(false)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  lecons       Lecon[]
+  inscriptions Inscription[]
+
+  @@map("formations")
+}
+
+enum FormatFormation {
+  EN_LIGNE
+  PRESENTIEL
+  HYBRIDE
+}
+
+enum Niveau {
+  DEBUTANT
+  INTERMEDIAIRE
+  AVANCE
+}
+
+model Lecon {
+  id          String    @id @default(cuid())
+  formationId String
+  titre       String
+  description String?
+  videoUrl    String?
+  contenu     String?
+  dureeMin    Int?
+  ordre       Int       @default(0)
+
+  formation    Formation          @relation(fields: [formationId], references: [id], onDelete: Cascade)
+  quiz         Quiz[]
+  progressions ProgressionLecon[]
+
+  @@map("lecons")
+}
+
+model Quiz {
+  id       String   @id @default(cuid())
+  leconId  String
+  question String
+  options  String[]
+  reponse  Int
+
+  lecon    Lecon         @relation(fields: [leconId], references: [id], onDelete: Cascade)
+  reponses ReponseQuiz[]
+
+  @@map("quiz")
+}
+
+model Inscription {
+  id               String            @id @default(cuid())
+  utilisateurId    String
+  formationId      String
+  statut           StatutInscription @default(EN_ATTENTE)
+  paiementId       String?
+  montantPaye      Float?
+  certificationUrl String?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  utilisateur  Utilisateur        @relation(fields: [utilisateurId], references: [id])
+  formation    Formation          @relation(fields: [formationId], references: [id])
+  progressions ProgressionLecon[]
+  reponsesQuiz ReponseQuiz[]
+
+  @@unique([utilisateurId, formationId])
+  @@map("inscriptions")
+}
+
+enum StatutInscription {
+  EN_ATTENTE
+  CONFIRME
+  ANNULE
+}
+
+model ProgressionLecon {
+  id            String    @id @default(cuid())
+  inscriptionId String
+  leconId       String
+  complete      Boolean   @default(false)
+  completedAt   DateTime?
+
+  inscription Inscription @relation(fields: [inscriptionId], references: [id])
+  lecon       Lecon       @relation(fields: [leconId], references: [id])
+
+  @@unique([inscriptionId, leconId])
+  @@map("progression_lecons")
+}
+
+model ReponseQuiz {
+  id            String @id @default(cuid())
+  inscriptionId String
+  quizId        String
+  reponse       Int
+  correcte      Boolean
+
+  inscription Inscription @relation(fields: [inscriptionId], references: [id])
+  quiz        Quiz        @relation(fields: [quizId], references: [id])
+
+  @@map("reponses_quiz")
+}
+
+// ── ACADEMY — PROGRAMMES ──────────────────────────────────────
+model Programme {
+  id            String        @id @default(cuid())
+  type          TypeProgramme
+  titre         String
+  titreEn       String?
+  description   String
+  descriptionEn String?
+  criteres      String[]
+  avantages     String[]
+  duree         String
+  ouvert        Boolean       @default(false)
+  dateLimite    DateTime?
+  imageUrl      String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  candidatures Candidature[]
+
+  @@map("programmes")
+}
+
+enum TypeProgramme {
+  INCUBATION
+  ACCELERATION
+}
+
+model Candidature {
+  id                   String            @id @default(cuid())
+  utilisateurId        String
+  programmeId          String
+  nomProjet            String
+  descriptionProjet    String
+  stadeAvancement      String
+  equipe               String?
+  pitchDeckUrl         String?
+  businessPlanUrl      String?
+  statut               StatutCandidature @default(SOUMISE)
+  noteAdmin            Int?
+  commentaireAdmin     String?
+  createdAt            DateTime          @default(now())
+  updatedAt            DateTime          @updatedAt
+
+  utilisateur Utilisateur @relation(fields: [utilisateurId], references: [id])
+  programme   Programme   @relation(fields: [programmeId], references: [id])
+
+  @@map("candidatures")
+}
+
+enum StatutCandidature {
+  SOUMISE
+  EN_EVALUATION
+  ACCEPTEE
+  REFUSEE
+}
+
+// ── ESPACE — ESPACES & RÉSERVATIONS ──────────────────────────
+model Espace {
+  id          String     @id @default(cuid())
+  nom         String
+  nomEn       String?
+  type        TypeEspace
+  description String
+  superficie  Float?
+  capacite    Int?
+  equipements String[]
+  imageUrl    String?
+  publicKey   String?
+  prixJour    Float?
+  prixDemi    Float?
+  prixMois    Float?
+  devise      String     @default("GNF")
+  disponible  Boolean    @default(true)
+  ville       String     @default("Conakry")
+  ordre       Int        @default(0)
+  createdAt   DateTime   @default(now())
+
+  creneaux Creneau[]
+
+  @@map("espaces")
+}
+
+enum TypeEspace {
+  COWORKING
+  BUREAU
+  SALLE
+}
+
+model Creneau {
+  id         String      @id @default(cuid())
+  espaceId   String
+  date       DateTime
+  type       TypeCreneau @default(JOURNEE)
+  disponible Boolean     @default(true)
+
+  espace      Espace       @relation(fields: [espaceId], references: [id])
+  reservation Reservation?
+
+  @@map("creneaux")
+}
+
+enum TypeCreneau {
+  MATIN
+  APRES_MIDI
+  JOURNEE
+}
+
+model Reservation {
+  id            String            @id @default(cuid())
+  utilisateurId String
+  creneauId     String            @unique
+  statut        StatutReservation @default(EN_ATTENTE)
+  montant       Float
+  devise        String            @default("GNF")
+  paiementId    String?
+  qrCode        String?
+  notes         String?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  utilisateur Utilisateur @relation(fields: [utilisateurId], references: [id])
+  creneau     Creneau     @relation(fields: [creneauId], references: [id])
+
+  @@map("reservations")
+}
+
+enum StatutReservation {
+  EN_ATTENTE
+  CONFIRME
+  ANNULE
+}
+
+// ── DONS ──────────────────────────────────────────────────────
+model Don {
+  id              String   @id @default(cuid())
+  utilisateurId   String?
+  montant         Float
+  devise          String   @default("GNF")
+  prenom          String
+  nom             String
+  email           String
+  telephone       String?
+  type            TypeDon  @default(UNIQUE)
+  statut          String   @default("EN_ATTENTE")
+  stripeSessionId String?
+  stripePaymentId String?
+  reference       String?
+  recuUrl         String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  utilisateur Utilisateur? @relation(fields: [utilisateurId], references: [id])
+
+  @@map("dons")
+}
+
+enum TypeDon {
+  UNIQUE
+  MENSUEL
+}
+
+// ── CONTENU ───────────────────────────────────────────────────
+model Article {
+  id        String      @id @default(cuid())
+  titre     String
+  titreEn   String?
+  slug      String      @unique
+  extrait   String
+  extraitEn String?
+  contenu   String
+  contenuEn String?
+  type      TypeArticle @default(ARTICLE)
+  imageUrl  String?
+  publicKey String?
+  publie    Boolean     @default(false)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  @@map("articles")
+}
+
+enum TypeArticle {
+  ARTICLE
+  COMMUNIQUE
+}
+
+model ImageGalerie {
+  id        String   @id @default(cuid())
+  url       String
+  publicKey String
+  legende   String?
+  legendeEn String?
+  ordre     Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@map("images_galerie")
+}
+
+model Document {
+  id        String   @id @default(cuid())
+  titre     String
+  titreEn   String?
+  url       String
+  publicKey String
+  categorie String?
+  createdAt DateTime @default(now())
+
+  @@map("documents")
+}
+
+model Faq {
+  id         String  @id @default(cuid())
+  question   String
+  questionEn String?
+  reponse    String
+  reponseEn  String?
+  categorie  String?
+  ordre      Int     @default(0)
+
+  @@map("faqs")
+}
+
+model Laureats {
+  id            String  @id @default(cuid())
+  nom           String
+  startup       String
+  description   String
+  descriptionEn String?
+  imageUrl      String?
+  linkedinUrl   String?
+  promotion     String?
+
+  @@map("laureats")
+}
+
+// ── SYSTÈME ───────────────────────────────────────────────────
+model Message {
+  id        String   @id @default(cuid())
+  prenom    String
+  nom       String
+  email     String
+  telephone String?
+  sujet     String
+  contenu   String
+  lu        Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@map("messages")
+}
+
+model ContactInfo {
+  id        String   @id @default(cuid())
+  cle       String   @unique
+  valeur    String
+  updatedAt DateTime @updatedAt
+
+  @@map("contact_infos")
+}
+
+model ChatbotConfig {
+  id           String   @id @default(cuid())
+  systemPrompt String
+  actif        Boolean  @default(true)
+  updatedAt    DateTime @updatedAt
+
+  @@map("chatbot_config")
+}
+
+model PageView {
+  id        String   @id @default(cuid())
+  page      String
+  locale    String   @default("fr")
+  createdAt DateTime @default(now())
+
+  @@map("page_views")
+}
