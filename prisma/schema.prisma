@@ -248,7 +248,7 @@ model Espace {
   disponible  Boolean    @default(true)
   ville       String     @default("Conakry")
   ordre       Int        @default(0)
-  createdAt   DateTime   @default(now())
+  createdAt   DateTime @default(now()) @map("created_at")
 
   creneaux Creneau[]
 
