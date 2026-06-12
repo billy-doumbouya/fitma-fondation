@@ -1,3 +1,5 @@
+"use client";
+
 import { forwardRef } from "react";
 import { Loader2, ChevronLeft, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
