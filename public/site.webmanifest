@@ -1,0 +1,17 @@
+{
+  "name": "Fitma Academy & Espace",
+  "short_name": "Fitma",
+  "description": "Fitma Academy — Formations, incubation et espaces de coworking à Conakry, Guinée.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#1B5E20",
+  "icons": [
+    {
+      "src": "/logo/fitma-logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

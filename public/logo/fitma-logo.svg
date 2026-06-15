@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 220" role="img" aria-label="Fitma">
+  <title>Fitma</title>
+  <g transform="translate(60,40)">
+    <rect x="0" y="0" width="140" height="140" rx="28" fill="#1B5E20"/>
+    <path d="M70 22 L118 70 L70 118 L22 70 Z" fill="#F9A825"/>
+    <circle cx="70" cy="70" r="20" fill="#1B5E20"/>
+    <path d="M70 50 L86 70 L70 90 L54 70 Z" fill="#FFFFFF" opacity="0.92"/>
+  </g>
+  <text x="230" y="105" font-family="Poppins, sans-serif" font-size="64" font-weight="600" fill="#1B5E20" letter-spacing="2">FITMA</text>
+  <text x="230" y="140" font-family="Poppins, sans-serif" font-size="20" font-weight="400" fill="#F9A825" letter-spacing="6">ACADEMY · ESPACE</text>
+</svg>

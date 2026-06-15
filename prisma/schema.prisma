@@ -213,8 +213,8 @@ model Candidature {
   statut               StatutCandidature @default(SOUMISE)
   noteAdmin            Int?
   commentaireAdmin     String?
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt            DateTime          @updatedAt
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt      @map("updated_at")
 
   utilisateur Utilisateur @relation(fields: [utilisateurId], references: [id])
   programme   Programme   @relation(fields: [programmeId], references: [id])

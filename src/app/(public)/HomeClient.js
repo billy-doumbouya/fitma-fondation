@@ -15,21 +15,20 @@ import {
   ChevronDown,
   GraduationCap,
   Building2,
-  CheckCircle,
-  Sparkles,
-  Users,
-  Trophy,
-  MapPin,
-  BookOpen,
   Wifi,
-  Coffee,
-  Monitor,
-  Zap,
+
   Globe,
-  Shield,
+  Sparkles,
+  Sprout,
+  HeartHandshake,
+  Lightbulb,
+  KeyRound,
   Star,
+  ShieldCheck,
+  Users,
   Quote,
 } from "lucide-react";
+
 import { SectionTitle, Badge } from "@/components/ui";
 import {
   STATS,
@@ -1386,29 +1385,77 @@ export default function HomeClient({ formations = [], articles = [] }) {
       {/* ══════════════════════════════════════════════════════
           VALEURS
       ══════════════════════════════════════════════════════ */}
-      <section style={{ background: "#fff", padding: "100px 0" }}>
-        <div className="container-fitma">
+      <section
+        style={{
+          background: "#fff",
+          padding: "100px 0",
+          position: "relative",
+          overflow: "hidden",
+        }}
+      >
+        {/* Motif géométrique discret en fond, ancré à droite */}
+        <svg
+          width="420"
+          height="420"
+          viewBox="0 0 420 420"
+          fill="none"
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            top: "-120px",
+            right: "-140px",
+            opacity: 0.04,
+            pointerEvents: "none",
+          }}
+        >
+          <defs>
+            <pattern
+              id="adinkraGrid"
+              width="70"
+              height="70"
+              patternUnits="userSpaceOnUse"
+            >
+              <circle cx="35" cy="35" r="3" fill="var(--savane,#1B5E20)" />
+              <path
+                d="M35 10 L60 35 L35 60 L10 35 Z"
+                stroke="var(--savane,#1B5E20)"
+                strokeWidth="1.5"
+                fill="none"
+              />
+            </pattern>
+          </defs>
+          <rect width="420" height="420" fill="url(#adinkraGrid)" />
+        </svg>
+
+        <div
+          className="container-fitma"
+          style={{ position: "relative", zIndex: 1 }}
+        >
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            style={{ textAlign: "center", marginBottom: 56 }}
+            style={{ textAlign: "center", marginBottom: 64 }}
           >
             <span
               style={{
-                display: "inline-block",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
                 padding: "5px 16px",
                 borderRadius: 100,
                 background: "rgba(249,168,37,.12)",
+                border: "1px solid rgba(249,168,37,.25)",
                 color: "#7a5000",
                 fontSize: 11,
                 fontWeight: 700,
                 letterSpacing: "0.12em",
                 textTransform: "uppercase",
-                marginBottom: 14,
+                marginBottom: 16,
                 fontFamily: "var(--font-d)",
               }}
             >
+              <Sparkles size={12} />
               Nos Valeurs
             </span>
             <h2
@@ -1422,6 +1469,20 @@ export default function HomeClient({ formations = [], articles = [] }) {
             >
               Ce Qui Nous Guide
             </h2>
+            <p
+              style={{
+                marginTop: 12,
+                fontSize: 15,
+                color: "var(--ardoise,#546E7A)",
+                maxWidth: 480,
+                marginLeft: "auto",
+                marginRight: "auto",
+                lineHeight: 1.6,
+              }}
+            >
+              Six principes qui façonnent chaque décision, chaque programme et
+              chaque relation que nous construisons.
+            </p>
           </motion.div>
 
           <div
@@ -1431,95 +1492,137 @@ export default function HomeClient({ formations = [], articles = [] }) {
               gap: 20,
             }}
           >
-            {(
-              VALEURS || [
+            {(() => {
+              const ICON_MAP = {
+                Impact: Sprout,
+                Ubuntu: HeartHandshake,
+                Innovation: Lightbulb,
+                Accessibilité: KeyRound,
+                Excellence: Star,
+                Intégrité: ShieldCheck,
+              };
+              const data = VALEURS || [
                 {
-                  icone: "🌱",
+                  icone: Sprout,
                   titre: "Impact",
                   description:
                     "Chaque action crée un changement durable dans nos communautés.",
                 },
                 {
-                  icone: "🤲",
+                  icone: HeartHandshake,
                   titre: "Ubuntu",
                   description:
                     "Je suis parce que nous sommes — la force du collectif.",
                 },
                 {
-                  icone: "💡",
+                  icone: Lightbulb,
                   titre: "Innovation",
                   description:
                     "Des solutions africaines pour des défis africains.",
                 },
                 {
-                  icone: "🔑",
+                  icone: KeyRound,
                   titre: "Accessibilité",
                   description: "La qualité ouverte à tous, partout en Afrique.",
                 },
                 {
-                  icone: "⭐",
+                  icone: Star,
                   titre: "Excellence",
                   description:
                     "Viser les sommets dans tout ce que nous faisons.",
                 },
                 {
-                  icone: "🛡️",
+                  icone: ShieldCheck,
                   titre: "Intégrité",
                   description:
                     "Confiance et transparence au cœur de nos relations.",
                 },
-              ]
-            ).map((v, i) => (
-              <motion.div
-                key={v.titre}
-                initial={{ opacity: 0, scale: 0.94 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{
-                  delay: i * 0.07,
-                  duration: 0.5,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-                whileHover={{ scale: 1.03 }}
-                style={{
-                  borderRadius: 18,
-                  padding: "28px 22px",
-                  background:
-                    i % 2 === 0 ? "rgba(27,94,32,.04)" : "rgba(249,168,37,.06)",
-                  border: "1.5px solid",
-                  borderColor:
-                    i % 2 === 0 ? "rgba(27,94,32,.1)" : "rgba(249,168,37,.15)",
-                  textAlign: "center",
-                  cursor: "default",
-                }}
-              >
-                <div style={{ fontSize: 36, marginBottom: 14 }}>{v.icone}</div>
-                <h3
-                  style={{
-                    fontFamily: "var(--font-d)",
-                    fontWeight: 800,
-                    fontSize: 15,
-                    color: "var(--savane-d,#1B5E20)",
-                    marginBottom: 8,
-                  }}
-                >
-                  {v.titre}
-                </h3>
-                <p
-                  style={{
-                    fontSize: 13,
-                    color: "var(--ardoise,#546E7A)",
-                    lineHeight: 1.6,
-                  }}
-                >
-                  {v.description}
-                </p>
-              </motion.div>
-            ))}
+              ];
+              return data.map((v, i) => {
+                const Icone =
+                  typeof v.icone === "function" ? v.icone : ICON_MAP[v.titre];
+                const isSavane = i % 2 === 0;
+                return (
+                  <motion.div
+                    key={v.titre}
+                    initial={{ opacity: 0, scale: 0.94 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{
+                      delay: i * 0.07,
+                      duration: 0.5,
+                      ease: [0.22, 1, 0.36, 1],
+                    }}
+                    whileHover={{ scale: 1.04, y: -4 }}
+                    style={{
+                      borderRadius: 18,
+                      padding: "28px 22px",
+                      background: isSavane
+                        ? "rgba(27,94,32,.04)"
+                        : "rgba(249,168,37,.06)",
+                      border: "1.5px solid",
+                      borderColor: isSavane
+                        ? "rgba(27,94,32,.1)"
+                        : "rgba(249,168,37,.15)",
+                      textAlign: "center",
+                      cursor: "default",
+                      transition:
+                        "box-shadow 0.3s ease, border-color 0.3s ease",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 56,
+                        height: 56,
+                        borderRadius: 14,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        margin: "0 auto 16px",
+                        background: isSavane
+                          ? "rgba(27,94,32,.1)"
+                          : "rgba(249,168,37,.14)",
+                      }}
+                    >
+                      {Icone && (
+                        <Icone
+                          size={26}
+                          strokeWidth={1.75}
+                          style={{
+                            color: isSavane
+                              ? "var(--savane,#1B5E20)"
+                              : "var(--cauri-d,#7a5000)",
+                          }}
+                        />
+                      )}
+                    </div>
+                    <h3
+                      style={{
+                        fontFamily: "var(--font-d)",
+                        fontWeight: 800,
+                        fontSize: 15,
+                        color: "var(--savane-d,#1B5E20)",
+                        marginBottom: 8,
+                      }}
+                    >
+                      {v.titre}
+                    </h3>
+                    <p
+                      style={{
+                        fontSize: 13,
+                        color: "var(--ardoise,#546E7A)",
+                        lineHeight: 1.6,
+                      }}
+                    >
+                      {v.description}
+                    </p>
+                  </motion.div>
+                );
+              });
+            })()}
           </div>
         </div>
       </section>
-
       {/* ══════════════════════════════════════════════════════
           LAUREATS
       ══════════════════════════════════════════════════════ */}

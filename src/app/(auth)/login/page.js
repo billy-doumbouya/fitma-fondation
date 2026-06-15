@@ -13,11 +13,53 @@ import { LogIn } from "lucide-react";
 import { Input, Button } from "@/components/ui";
 import { loginSchema } from "@/schemas";
 
+/* Motif géométrique inline (Adinkra) — currentColor only */
+function MotifAdinkra({ className, color = "#fff" }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 240 240"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <defs>
+        <pattern
+          id="adinkraLogin"
+          width="60"
+          height="60"
+          patternUnits="userSpaceOnUse"
+        >
+          <path
+            d="M0 30 L30 0 L60 30 L30 60 Z"
+            stroke={color}
+            strokeWidth="1.5"
+            fill="none"
+          />
+          <circle cx="30" cy="30" r="3.5" fill={color} />
+          <path d="M0 0 L8 0 L0 8 Z" fill={color} />
+          <path d="M60 60 L52 60 L60 52 Z" fill={color} />
+        </pattern>
+      </defs>
+      <rect width="240" height="240" fill="url(#adinkraLogin)" />
+    </svg>
+  );
+}
+
+const normalizeRedirect = (value) => {
+  if (!value || typeof value !== "string") return "/";
+  if (!value.startsWith("/")) return "/";
+  if (value === "/member") return "/membre";
+  if (value.startsWith("/member/"))
+    return value.replace(/^\/member/, "/membre");
+  return value;
+};
+
 export default function LoginPage() {
   const [googleLoading, setGoogleLoading] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirect = searchParams.get("redirect") || "/";
+  const redirect = normalizeRedirect(searchParams.get("redirect")) || "/";
 
   const {
     register,
@@ -44,26 +86,89 @@ export default function LoginPage() {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center px-4 py-16"
+      className="min-h-screen flex items-center justify-center px-4 py-16 relative overflow-hidden"
       style={{
         background:
           "linear-gradient(135deg,var(--savane-pale),var(--cauri-pale))",
       }}
     >
+      {/* ---------------- FORMES ORGANIQUES ANIMÉES ---------------- */}
+      <motion.div
+        className="absolute pointer-events-none"
+        style={{
+          top: "-15%",
+          left: "-10%",
+          width: 420,
+          height: 420,
+          borderRadius: "42% 58% 60% 40% / 50% 45% 55% 50%",
+          background: "var(--savane)",
+          opacity: 0.08,
+        }}
+        animate={{
+          scale: [1, 1.08, 1],
+          rotate: [0, 8, 0],
+        }}
+        transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="absolute pointer-events-none"
+        style={{
+          bottom: "-18%",
+          right: "-12%",
+          width: 480,
+          height: 480,
+          borderRadius: "55% 45% 40% 60% / 48% 52% 48% 52%",
+          background: "var(--cauri-l)",
+          opacity: 0.1,
+        }}
+        animate={{
+          scale: [1, 1.1, 1],
+          rotate: [0, -10, 0],
+        }}
+        transition={{
+          duration: 18,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: 1,
+        }}
+      />
+
+      <MotifAdinkra
+        className="absolute top-8 right-8 w-40 h-40 opacity-[0.06] pointer-events-none"
+        color="var(--savane)"
+      />
+      <MotifAdinkra
+        className="absolute bottom-8 left-8 w-32 h-32 opacity-[0.05] pointer-events-none rotate-45"
+        color="var(--cauri-d)"
+      />
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md"
+        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        className="w-full max-w-md relative z-10"
       >
         <div className="text-center mb-8">
-          <Link href="/">
-            <Image
-              src="/logo/fitma-logo.svg"
-              alt="Fitma"
-              width={56}
-              height={56}
-              className="mx-auto mb-4"
-            />
+          <Link href="/" className="inline-block">
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{
+                delay: 0.1,
+                duration: 0.5,
+                type: "spring",
+                bounce: 0.35,
+              }}
+            >
+              <Image
+                src="/logo/fitma-logo.svg"
+                alt="Fitma"
+                width={500}
+                height={500}
+                className="mx-auto mb-4"
+                priority
+              />
+            </motion.div>
           </Link>
           <h1
             className="font-d font-black text-2xl"
@@ -152,8 +257,10 @@ export default function LoginPage() {
               fullWidth
               size="lg"
             >
-              <LogIn size={18} />
-              Se connecter
+              <span className="inline-flex items-center justify-center gap-2">
+                <LogIn size={18} />
+                Se connecter
+              </span>
             </Button>
           </form>
 

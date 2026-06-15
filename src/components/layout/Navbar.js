@@ -152,8 +152,9 @@ export default function Navbar() {
               <Image
                 src="/logo/fitma-logo.svg"
                 alt="Fondation Fitma"
-                fill
-                className="object-contain relative z-10"
+                width={500}
+                height={500}
+                className="object-cover relative z-10"
                 priority
               />
             </motion.div>
@@ -435,7 +436,7 @@ export default function Navbar() {
                           </Link>
                         ) : (
                           <Link
-                            href="/membre/dashboard"
+                            href="/dashboard"
                             className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors"
                             style={{
                               color: "var(--ardoise)",
@@ -724,7 +725,7 @@ export default function Navbar() {
                       href={
                         session.user?.role === "ADMIN"
                           ? "/admin/dashboard"
-                          : "/membre/dashboard"
+                          : "/dashboard"
                       }
                       className="btn btn-outline-savane w-full justify-center"
                     >

@@ -9,19 +9,19 @@ import { getInitials } from "@/lib/utils"
 
 const ICONS = { LayoutDashboard, GraduationCap, Calendar, FileCheck, Heart, User }
 const NAV = [
-  { label:"Dashboard",        href:"/membre/dashboard",        icon:"LayoutDashboard" },
-  { label:"Mes formations",   href:"/membre/mes-formations",   icon:"GraduationCap" },
-  { label:"Mes réservations", href:"/membre/mes-reservations", icon:"Calendar" },
-  { label:"Mes candidatures", href:"/membre/mes-candidatures", icon:"FileCheck" },
-  { label:"Mes dons",         href:"/membre/mes-dons",         icon:"Heart" },
-  { label:"Mon profil",       href:"/membre/profil",           icon:"User" },
+  { label:"Dashboard",        href:"/dashboard",        icon:"LayoutDashboard" },
+  { label:"Mes formations",   href:"/mes-formations",   icon:"GraduationCap" },
+  { label:"Mes réservations", href:"/mes-reservations", icon:"Calendar" },
+  { label:"Mes candidatures", href:"/mes-candidatures", icon:"FileCheck" },
+  { label:"Mes dons",         href:"/mes-dons",         icon:"Heart" },
+  { label:"Mon profil",       href:"/profil",           icon:"User" },
 ]
 
 export default function MembreSidebar({ user }) {
   const [collapsed, setCollapsed] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const pathname = usePathname()
-  const isActive = (href) => href === "/membre/dashboard" ? pathname === href : pathname.startsWith(href)
+  const isActive = (href) => href === "/dashboard" ? pathname === href : pathname.startsWith(href)
 
   const SidebarContent = () => (
     <>
