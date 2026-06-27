@@ -282,7 +282,7 @@ const onSubmit = async (data) => {
           >
             Pas encore de compte ?{" "}
             <Link
-              href="/inscription"
+              href="/register"
               className="font-semibold"
               style={{ color: "var(--savane)" }}
             >
