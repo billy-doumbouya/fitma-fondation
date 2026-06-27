@@ -93,7 +93,17 @@ export const authOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-        token.role = user.role || "MEMBRE";
+        token.role = user.role || null;
+      }
+      // Cas Google (ou tout cas où le rôle n'est pas encore connu) :
+      // on va le chercher en base une fois, puis on le garde en cache dans le token.
+      if (!token.role && token.email) {
+        
+        const dbUser = await prisma.utilisateur.findUnique({
+          where: { email: token.email },
+          select: { role: true },
+        });
+        token.role = dbUser?.role || "MEMBRE";
       }
       return token;
     },

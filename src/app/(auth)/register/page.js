@@ -69,7 +69,7 @@ export default function InscriptionPage() {
       });
       if (login?.ok) {
         toast.success("Compte créé avec succès !");
-        router.push("/dashboard");
+        router.push("/membre/dashboard"); // ✅ corrigé (était "/dashboard", route inexistante)
       }
     } catch (e) {
       toast.error(e.message || "Erreur lors de la création du compte.");
@@ -168,7 +168,9 @@ export default function InscriptionPage() {
         </div>
         <div className="card p-6 sm:p-8">
           <Button
-            onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
+            onClick={() =>
+              signIn("google", { callbackUrl: "/membre/dashboard" })
+            }
             variant="ghost"
             fullWidth
             className="border mb-5"

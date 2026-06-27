@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
-import { signIn } from "next-auth/react";
+import { signIn, getSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { toast } from "sonner";
@@ -45,10 +45,10 @@ function MotifAdinkra({ className, color = "#fff" }) {
     </svg>
   );
 }
-
-const normalizeRedirect = (value) => {
-  if (!value || typeof value !== "string") return "/";
-  if (!value.startsWith("/")) return "/";
+const normalizeRedirect = (value, role) => {
+  const fallback = role === "ADMIN" ? "/admin/dashboard" : "/membre/dashboard";
+  if (!value || typeof value !== "string") return fallback;
+  if (!value.startsWith("/")) return fallback;
   if (value === "/member") return "/membre";
   if (value.startsWith("/member/"))
     return value.replace(/^\/member/, "/membre");
@@ -59,7 +59,7 @@ export default function LoginPage() {
   const [googleLoading, setGoogleLoading] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirect = normalizeRedirect(searchParams.get("redirect")) || "/";
+const redirectParam = searchParams.get("redirect");
 
   const {
     register,
@@ -67,21 +67,33 @@ export default function LoginPage() {
     formState: { errors, isSubmitting },
   } = useForm({ resolver: yupResolver(loginSchema) });
 
-  const onSubmit = async (data) => {
+const onSubmit = async (data) => {
+  try {
     const res = await signIn("credentials", {
       email: data.email,
       motDePasse: data.motDePasse,
       redirect: false,
     });
+
     if (res?.ok) {
       toast.success("Connexion réussie !");
-      router.push(redirect);
-    } else toast.error("Email ou mot de passe incorrect.");
-  };
+      const session = await getSession();
+      const role = session?.user?.role;
+      router.push(normalizeRedirect(redirectParam, role));
+    } else {
+      toast.error("Email ou mot de passe incorrect.");
+    }
+  } catch (err) {
+    console.error("Erreur de connexion :", err);
+    toast.error("Une erreur est survenue. Réessaie.");
+  }
+};
 
   const handleGoogle = async () => {
     setGoogleLoading(true);
-    await signIn("google", { callbackUrl: redirect });
+    // Pour Google, on ne connaît pas encore le rôle avant la redirection OAuth,
+    // donc on laisse NextAuth rediriger vers une route "routeur" qui décide ensuite.
+    await signIn("google", { callbackUrl:  "/membre/dashboard" });
   };
 
   return (
